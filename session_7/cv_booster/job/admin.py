@@ -4,4 +4,7 @@ from .models import Job
 
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('title', 'company', 'location', 'salary')
+    search_fields = ('title', 'company', 'location')
+    list_filter = ('location',)
+    ordering = ('salary',)
