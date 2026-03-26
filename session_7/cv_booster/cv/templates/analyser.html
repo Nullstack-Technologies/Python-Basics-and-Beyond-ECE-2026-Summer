@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Predictor</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 2em; background-color: #f8f9fa; color: #333; }
+        h1 { color: #0056b3; }
+        form ul { list-style: none; padding: 0; }
+        form li { margin-bottom: 0.5em; }
+        .skills-container { border: 1px solid #ddd; padding: 1em; border-radius: 5px; background-color: #fff; max-height: 400px; overflow-y: auto; margin-bottom: 1em;}
+        .skills-list {
+            columns: 3;
+            -webkit-columns: 3;
+            -moz-columns: 3;
+        }
+        .skills-list li { display: block; }
+        .skills-list label { margin-left: 5px; cursor: pointer; }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover { background-color: #0056b3; }
+        .result { margin-top: 2em; font-size: 1.5em; font-weight: bold; color: #28a745; }
+        .error { margin-top: 1em; color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Salary Predictor</h1>
+    <p>Select skills to get a salary prediction based on available job data.</p>
+
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="fieldWrapper">
+            <label>{{ form.skills.label }}</label>
+            <div class="skills-container">
+                <ul class="skills-list">
+                {% for choice in form.skills %}
+                    <li>{{ choice.tag }} <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label></li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% if form.skills.errors %}
+                <div class="error">
+                    {% for error in form.skills.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit">Predict Salary</button>
+    </form>
+
+    {% if predicted_salary is not None %}
+        <div class="result">
+            Predicted Salary: INR {{ predicted_salary|floatformat:2|default:"N/A" }} LPA
+        </div>
+    {% endif %}
+
+</body>
+</html>
